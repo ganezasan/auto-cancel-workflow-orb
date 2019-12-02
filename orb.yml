@@ -1,0 +1,43 @@
+version: 2.1
+
+description: |
+  This is a CircleCI orb for canceling all jobs in a workflow when one of a job in the workflow is failed.
+  Orb source | https://github.com/ganezasan/auto-cancel-workflow-orb
+
+executors:
+  default:
+    docker:
+      - image: circleci/node:latest
+jobs:
+  auto-cancel:
+    executor: default
+    parameters:
+      api_token:
+        default: CIRCLECI_TOKEN
+        description: Personal API token in CircleCI, it's for call the cancel workflow and get the status of jobs in workflow
+        type: env_var_name
+      interval_seconds:
+        default: 30
+        description: Interval time
+        type: integer
+    steps:
+      - run:
+          name: auto-cancel
+          command: |
+            while true; do
+              json=$(curl -s -H 'Accept: application/json' -X GET https://circleci.com/api/v2/workflow/${CIRCLE_WORKFLOW_ID}/job?circle-token=${<< parameters.api_token >>})
+              is_failed=$(echo $json | jq '.items | map(select(.name != "auto-cancel")) | any(.status == "failed")')
+              is_pending=$(echo $json | jq '.items | map(select(.name != "auto-cancel")) | any(.status == "running")')
+
+              if [ "$is_failed" == "true" ]; then
+                echo "Cancel workflow"
+                curl -s -H 'Accept: application/json' -X POST https://circleci.com/api/v2/workflow/${CIRCLE_WORKFLOW_ID}/cancel?circle-token=${<< parameters.api_token >>}
+                exit 0
+              elif [ "$is_pending" == "false" ]; then
+                echo "other jobs are finished"
+                exit 0
+              else
+                echo "waiting for other jobs"
+              fi
+              sleep << parameters.interval_seconds >>
+            done

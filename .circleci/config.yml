@@ -1,0 +1,30 @@
+version: 2.1
+orbs:
+  auto-cancel: ganezasan/auto-cancel-workflow@dev:first
+
+executors:
+  default:
+    docker:
+      - image: alpine:latest
+jobs:
+  job-1:
+    executor: default
+    steps:
+      - run: sleep 120
+  job-2:
+    executor: default
+    steps:
+      - run: sleep 60
+  failed-job:
+    executor: default
+    steps:
+      - run: sleep 30 && exit 1
+workflows:
+  version: 2
+  auto-cancel-example:
+    jobs:
+    - job-1
+    - job-2
+    - failed-job
+    - auto-cancel/auto-cancel:
+        api_token: CIRCLECI_TOKEN

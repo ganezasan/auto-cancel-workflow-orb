@@ -25,17 +25,35 @@ workflows:
   version: 2
   a-job-failed:
     jobs:
-      - job-1
-      - job-2
-      - failed-job
+      - hold:
+          type: approval
+      - job-1:
+          requires:
+            - hold
+      - job-2:
+          requires:
+            - hold
+      - failed-job:
+          requires:
+            - hold
       - auto-cancel/auto-cancel:
+          requires:
+            - hold
           api_token: CIRCLECI_TOKEN
           interval_seconds: 10
   all-jobs-success:
     jobs:
-      - job-1
-      - job-2
+      - hold:
+          type: approval
+      - job-1:
+          requires:
+            - hold
+      - job-2:
+          requires:
+            - hold
       - auto-cancel/auto-cancel:
+          requires:
+            - hold
           api_token: CIRCLECI_TOKEN
           interval_seconds: 10
   lint_pack-validate_publish-dev:
@@ -43,6 +61,7 @@ workflows:
       - orb-tools/lint
       - orb-tools/publish-dev:
           orb-name: ganezasan/auto-cancel-workflow
+          orb-path: orb.yml
           requires:
             - orb-tools/lint
       - orb-tools/trigger-integration-workflow:

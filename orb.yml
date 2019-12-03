@@ -13,7 +13,7 @@ jobs:
     executor: default
     parameters:
       api_token:
-        default: CIRCLECI_TOKEN
+        default: CIRCLE_TOKEN
         description: Personal API token in CircleCI, it's for call the cancel workflow and get the status of jobs in workflow
         type: env_var_name
       interval_seconds:

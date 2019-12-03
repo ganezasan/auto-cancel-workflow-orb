@@ -39,7 +39,7 @@ workflows:
       - auto-cancel/auto-cancel:
           requires:
             - hold
-          api_token: CIRCLECI_TOKEN
+          api_token: CIRCLE_TOKEN
           interval_seconds: 10
   all-jobs-success:
     jobs:
@@ -54,7 +54,7 @@ workflows:
       - auto-cancel/auto-cancel:
           requires:
             - hold
-          api_token: CIRCLECI_TOKEN
+          api_token: CIRCLE_TOKEN
           interval_seconds: 10
   lint_pack-validate_publish-dev:
     jobs:

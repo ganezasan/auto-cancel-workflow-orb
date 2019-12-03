@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   auto-cancel: ganezasan/auto-cancel-workflow@dev:first
+  orb-tools: circleci/orb-tools@7.3.0
 
 executors:
   default:
@@ -19,6 +20,7 @@ jobs:
     executor: default
     steps:
       - run: sleep 30 && exit 1
+
 workflows:
   version: 2
   a-job-failed:
@@ -36,3 +38,15 @@ workflows:
       - auto-cancel/auto-cancel:
           api_token: CIRCLECI_TOKEN
           interval_seconds: 10
+  lint_pack-validate_publish-dev:
+    jobs:
+      - orb-tools/lint
+      - orb-tools/publish-dev:
+          orb-name: ganezasan/auto-cancel-workflow
+          requires:
+            - orb-tools/lint
+      - orb-tools/trigger-integration-workflow:
+          name: trigger-integration-dev
+          ssh-fingerprints: b1:b4:6a:3d:2d:1c:63:4f:fd:92:78:e1:0f:87:d3:37
+          requires:
+            - orb-tools/publish-dev

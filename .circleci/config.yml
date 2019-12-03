@@ -21,10 +21,18 @@ jobs:
       - run: sleep 30 && exit 1
 workflows:
   version: 2
-  auto-cancel-example:
+  a-job-failed:
     jobs:
-    - job-1
-    - job-2
-    - failed-job
-    - auto-cancel/auto-cancel:
-        api_token: CIRCLECI_TOKEN
+      - job-1
+      - job-2
+      - failed-job
+      - auto-cancel/auto-cancel:
+          api_token: CIRCLECI_TOKEN
+          interval_seconds: 10
+  all-jobs-success:
+    jobs:
+      - job-1
+      - job-2
+      - auto-cancel/auto-cancel:
+          api_token: CIRCLECI_TOKEN
+          interval_seconds: 10

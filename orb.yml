@@ -26,8 +26,8 @@ jobs:
           command: |
             while true; do
               json=$(curl -s -H 'Accept: application/json' -X GET https://circleci.com/api/v2/workflow/${CIRCLE_WORKFLOW_ID}/job?circle-token=${<< parameters.api_token >>})
-              is_failed=$(echo $json | jq '.items | map(select(.name != "auto-cancel")) | any(.status == "failed")')
-              is_pending=$(echo $json | jq '.items | map(select(.name != "auto-cancel")) | any(.status == "running")')
+              is_failed=$(echo $json | jq '.items | map(select(.name | contains("auto-cancel") | not)) | any(.status == "failed")')
+              is_pending=$(echo $json | jq '.items | map(select(.name | contains("auto-cancel") | not)) | any(.status == "running")')
 
               if [ "$is_failed" == "true" ]; then
                 echo "Cancel workflow"

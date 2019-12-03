@@ -67,7 +67,21 @@ workflows:
           requires:
             - orb-tools/lint
       - orb-tools/trigger-integration-workflow:
-          name: trigger-integration-dev
+          name: trigger-integration-master
           ssh-fingerprints: 65:2b:cc:9d:a2:19:53:62:55:24:b5:96:d6:71:66:13
+          tag: master
           requires:
             - orb-tools/publish-dev
+          filters:
+            branches:
+              only: master
+  integration-tests_prod-release:
+    jobs:
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-patch
+          orb-name: ganezasan/auto-cancel-workflow
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-.*/

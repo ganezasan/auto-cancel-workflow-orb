@@ -60,6 +60,8 @@ workflows:
     jobs:
       - orb-tools/lint
       - orb-tools/publish-dev:
+          checkout: true
+          attach-workspace: false
           orb-name: ganezasan/auto-cancel-workflow
           orb-path: orb.yml
           requires:

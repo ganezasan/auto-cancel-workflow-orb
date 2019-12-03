@@ -68,6 +68,6 @@ workflows:
             - orb-tools/lint
       - orb-tools/trigger-integration-workflow:
           name: trigger-integration-dev
-          ssh-fingerprints: b1:b4:6a:3d:2d:1c:63:4f:fd:92:78:e1:0f:87:d3:37
+          ssh-fingerprints: 65:2b:cc:9d:a2:19:53:62:55:24:b5:96:d6:71:66:13
           requires:
             - orb-tools/publish-dev

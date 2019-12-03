@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  auto-cancel: ganezasan/auto-cancel-workflow@dev:first
+  auto-cancel: ganezasan/auto-cancel-workflow@0.0.3
   orb-tools: circleci/orb-tools@7.3.0
 
 executors:

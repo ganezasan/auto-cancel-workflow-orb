@@ -35,6 +35,7 @@ jobs:
                 exit 0
               elif [ "$is_pending" == "false" ]; then
                 echo "other jobs are finished"
+                echo $json | jq '.items | map(select(.name | contains("auto-cancel") | not))'
                 exit 0
               else
                 echo "waiting for other jobs"

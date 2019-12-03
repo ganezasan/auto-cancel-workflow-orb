@@ -59,17 +59,19 @@ workflows:
   lint_pack-validate_publish-dev:
     jobs:
       - orb-tools/lint
-      - orb-tools/publish-dev:
-          checkout: true
-          attach-workspace: false
-          orb-name: ganezasan/auto-cancel-workflow
-          orb-path: orb.yml
+      - orb-tools/pack:
           requires:
             - orb-tools/lint
+      - orb-tools/publish-dev:
+          orb-name: ganezasan/auto-cancel-workflow
+          requires:
+            - orb-tools/pack
       - orb-tools/trigger-integration-workflow:
           name: trigger-integration-master
           ssh-fingerprints: 65:2b:cc:9d:a2:19:53:62:55:24:b5:96:d6:71:66:13
           tag: master
+          use-git-diff: false
+          static-release-type: patch
           requires:
             - orb-tools/publish-dev
           filters:

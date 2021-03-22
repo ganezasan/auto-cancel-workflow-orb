@@ -1,0 +1,33 @@
+description: |
+  Cancel all other jobs in the same workflow when at least one job is failed.
+
+usage:
+  version: 2.1
+  orbs:
+    auto-cancel: ganezasan/auto-cancel-workflow@volatile
+  jobs:
+    success-job-1:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - run: sleep 60
+    success-job-2:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - run: sleep 60
+    failed-job:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - run: sleep 30 && exit 1
+
+  workflows:
+    cancel-workflow:
+      jobs:
+        - success-job-1
+        - success-job-2
+        - failed-job
+        - auto-cancel/auto-cancel:
+            api_token: CIRCLE_TOKEN
+            interval_seconds: 10
